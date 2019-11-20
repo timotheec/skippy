@@ -17,12 +17,14 @@ HEADERS += \
     src/gl/BasicColors.h \
     src/gl/GLUtilityMethods.h \
     src/gl/openglincludeQtComp.h \
-    src/Viewer3D.h
+    src/Viewer3D.h \
+    src/MainWindow.h
 SOURCES += \
     src/main.cpp \
     src/gl/BasicColors.cpp \
     src/gl/GLUtilityMethods.cpp \
-    src/Viewer3D.cpp
+    src/Viewer3D.cpp \
+    src/MainWindow.cpp
 
 EXT_DIR = extern
 

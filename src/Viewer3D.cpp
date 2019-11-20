@@ -3,35 +3,6 @@
 Viewer3D::Viewer3D(QGLWidget *parent)
     : QGLViewer(parent), QOpenGLFunctions_4_3_Core() {}
 
-void Viewer3D::add_actions_to_toolBar(QToolBar *toolBar) {
-  // Specify the actions :
-  DetailedAction *open_mesh =
-      new DetailedAction(QIcon(":icons/open.png"), "Open Mesh", "Open Mesh",
-                         this, this, SLOT(open_mesh()));
-  DetailedAction *save_mesh =
-      new DetailedAction(QIcon(":icons/save.png"), "Save model", "Save model",
-                         this, this, SLOT(save_mesh()));
-  DetailedAction *help = new DetailedAction(QIcon(":icons/help.png"), "HELP",
-                                            "HELP", this, this, SLOT(help()));
-  DetailedAction *saveCamera =
-      new DetailedAction(QIcon(":icons/camera.png"), "Save camera",
-                         "Save camera", this, this, SLOT(saveCamera()));
-  DetailedAction *openCamera =
-      new DetailedAction(QIcon(":icons/open_camera.png"), "Open camera",
-                         "Open camera", this, this, SLOT(openCamera()));
-  DetailedAction *saveSnapShotPlusPlus = new DetailedAction(
-      QIcon(":icons/save_snapshot.png"), "Save snapshot", "Save snapshot", this,
-      this, SLOT(saveSnapShotPlusPlus()));
-
-  // Add them :
-  toolBar->addAction(open_mesh);
-  toolBar->addAction(save_mesh);
-  toolBar->addAction(help);
-  toolBar->addAction(saveCamera);
-  toolBar->addAction(openCamera);
-  toolBar->addAction(saveSnapShotPlusPlus);
-}
-
 void Viewer3D::draw() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);

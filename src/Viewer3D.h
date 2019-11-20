@@ -38,29 +38,27 @@ class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
 public:
   Viewer3D(QGLWidget *parent = NULL);
 
-  void add_actions_to_toolBar(QToolBar *toolBar);
-
-  void draw();
+  void draw() override;
 
   void pickBackgroundColor();
 
   void adjustCamera(point3d const &bb, point3d const &BB);
 
-  void init();
+  void init() override;
 
-  QString helpString() const;
+  QString helpString() const override;
 
   void updateTitle(QString text);
 
-  void keyPressEvent(QKeyEvent *event);
+  void keyPressEvent(QKeyEvent *event) override;
 
-  void mouseDoubleClickEvent(QMouseEvent *e);
+  void mouseDoubleClickEvent(QMouseEvent *e) override;
 
-  void mousePressEvent(QMouseEvent *e);
+  void mousePressEvent(QMouseEvent *e) override;
 
-  void mouseMoveEvent(QMouseEvent *e);
+  void mouseMoveEvent(QMouseEvent *e) override;
 
-  void mouseReleaseEvent(QMouseEvent *e);
+  void mouseReleaseEvent(QMouseEvent *e) override;
 
 signals:
   void windowTitleUpdated(const QString &);
