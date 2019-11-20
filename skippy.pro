@@ -18,13 +18,15 @@ HEADERS += \
     src/gl/GLUtilityMethods.h \
     src/gl/openglincludeQtComp.h \
     src/Viewer3D.h \
-    src/MainWindow.h
+    src/MainWindow.h \
+    src/geometry/Vertex.h \
+    src/geometry/Triangle.h
 SOURCES += \
     src/main.cpp \
     src/gl/BasicColors.cpp \
     src/gl/GLUtilityMethods.cpp \
-    src/Viewer3D.cpp \
-    src/MainWindow.cpp
+    src/MainWindow.cpp \
+    src/Viewer3D.cpp
 
 EXT_DIR = extern
 

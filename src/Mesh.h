@@ -2,28 +2,14 @@
 #define PROJECTMESH_H
 
 #include "BasicIO.h"
-#include "point3.h"
+#include "geometry/Triangle.h"
+#include "geometry/Vertex.h"
 
 #include <QFileDialog>
 #include <QString>
 #include <vector>
 
 using namespace std;
-
-struct Vertex {
-  point3d p;
-  Vertex() {}
-  Vertex(double x, double y, double z) : p(x, y, z) {}
-  double &operator[](unsigned int c) { return p[c]; }
-  double operator[](unsigned int c) const { return p[c]; }
-};
-
-struct Triangle {
-  unsigned int corners[3];
-  unsigned int &operator[](unsigned int c) { return corners[c]; }
-  unsigned int operator[](unsigned int c) const { return corners[c]; }
-  unsigned int size() const { return 3; }
-};
 
 class Mesh {
 public:
