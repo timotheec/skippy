@@ -1,7 +1,11 @@
 #ifndef PROJECTMESH_H
 #define PROJECTMESH_H
 
+#include "BasicIO.h"
 #include "point3.h"
+
+#include <QFileDialog>
+#include <QString>
 #include <vector>
 
 using namespace std;
@@ -26,9 +30,13 @@ public:
   vector<Vertex> vertices;
   vector<Triangle> triangles;
 
+  point3d minPoint, maxPoint;
+
   void clear() {
     vertices.clear();
     triangles.clear();
+    minPoint = point3d();
+    maxPoint = point3d();
   }
 
   void draw() {
@@ -44,6 +52,50 @@ public:
       glVertex3f(p2[0], p2[1], p2[2]);
     }
     glEnd();
+  }
+
+  void open() {
+    bool success = false;
+    QString fileName = QFileDialog::getOpenFileName(NULL, "", "");
+    if (!fileName.isNull()) { // got a file name
+      if (fileName.endsWith(QString(".off")))
+        success =
+            OFFIO::openTriMesh(fileName.toStdString(), vertices, triangles);
+      else if (fileName.endsWith(QString(".obj")))
+        success =
+            OBJIO::openTriMesh(fileName.toStdString(), vertices, triangles);
+      if (success) {
+        std::cout << fileName.toStdString() << " was opened successfully"
+                  << std::endl;
+        point3d bb(FLT_MAX, FLT_MAX, FLT_MAX), BB(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        for (unsigned int v = 0; v < vertices.size(); ++v) {
+          bb = point3d::min(bb, vertices[v]);
+          BB = point3d::max(BB, vertices[v]);
+        }
+        minPoint = bb;
+        maxPoint = BB;
+      } else
+        std::cout << fileName.toStdString() << " could not be opened"
+                  << std::endl;
+    }
+  }
+
+  void save() {
+    bool success = false;
+    QString fileName = QFileDialog::getOpenFileName(NULL, "", "");
+    if (!fileName.isNull()) { // got a file name
+      if (fileName.endsWith(QString(".off")))
+        success =
+            OFFIO::save(fileName.toStdString(), vertices, triangles);
+      else if (fileName.endsWith(QString(".obj")))
+        success =
+            OBJIO::save(fileName.toStdString(), vertices, triangles);
+      if (success)
+        std::cout << fileName.toStdString() << " was saved" << std::endl;
+      else
+        std::cout << fileName.toStdString() << " could not be saved"
+                  << std::endl;
+    }
   }
 };
 

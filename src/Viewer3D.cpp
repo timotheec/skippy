@@ -155,48 +155,12 @@ void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void Viewer3D::open_mesh() {
-  bool success = false;
-  QString fileName = QFileDialog::getOpenFileName(NULL, "", "");
-  if (!fileName.isNull()) { // got a file name
-    if (fileName.endsWith(QString(".off")))
-      success = OFFIO::openTriMesh(fileName.toStdString(), mesh.vertices,
-                                   mesh.triangles);
-    else if (fileName.endsWith(QString(".obj")))
-      success = OBJIO::openTriMesh(fileName.toStdString(), mesh.vertices,
-                                   mesh.triangles);
-    if (success) {
-      std::cout << fileName.toStdString() << " was opened successfully"
-                << std::endl;
-      point3d bb(FLT_MAX, FLT_MAX, FLT_MAX), BB(-FLT_MAX, -FLT_MAX, -FLT_MAX);
-      for (unsigned int v = 0; v < mesh.vertices.size(); ++v) {
-        bb = point3d::min(bb, mesh.vertices[v]);
-        BB = point3d::max(BB, mesh.vertices[v]);
-      }
-      adjustCamera(bb, BB);
-      update();
-    } else
-      std::cout << fileName.toStdString() << " could not be opened"
-                << std::endl;
-  }
+  mesh.open();
+  adjustCamera(mesh.minPoint, mesh.maxPoint);
+  update();
 }
 
-void Viewer3D::save_mesh() {
-  bool success = false;
-  QString fileName = QFileDialog::getOpenFileName(NULL, "", "");
-  if (!fileName.isNull()) { // got a file name
-    mesh.clear();
-    if (fileName.endsWith(QString(".off")))
-      success =
-          OFFIO::save(fileName.toStdString(), mesh.vertices, mesh.triangles);
-    else if (fileName.endsWith(QString(".obj")))
-      success =
-          OBJIO::save(fileName.toStdString(), mesh.vertices, mesh.triangles);
-    if (success)
-      std::cout << fileName.toStdString() << " was saved" << std::endl;
-    else
-      std::cout << fileName.toStdString() << " could not be saved" << std::endl;
-  }
-}
+void Viewer3D::save_mesh() { mesh.save(); }
 
 void Viewer3D::showControls() {
   // Show controls :
