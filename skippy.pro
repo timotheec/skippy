@@ -21,14 +21,16 @@ HEADERS += \
     src/MainWindow.h \
     src/geometry/Vertex.h \
     src/geometry/Triangle.h \
-    src/Camera.h
+    src/Camera.h \
+    src/SkippyPipeline.h
 SOURCES += \
     src/main.cpp \
     src/gl/BasicColors.cpp \
     src/gl/GLUtilityMethods.cpp \
     src/MainWindow.cpp \
     src/Viewer3D.cpp \
-    src/Camera.cpp
+    src/Camera.cpp \
+    src/SkippyPipeline.cpp
 
 EXT_DIR = extern
 

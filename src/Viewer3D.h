@@ -1,9 +1,9 @@
 #ifndef MYVIEWER_H
 #define MYVIEWER_H
 
-// Mesh stuff:
 #include "Camera.h"
 #include "Mesh.h"
+#include "SkippyPipeline.h"
 
 // Parsing:
 #include "BasicIO.h"
@@ -38,8 +38,12 @@ class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
 
   qglviewer::Vec orig;
 
+  SkippyPipeline *skippyPipeline;
+
+  bool isPressed = false;
+
 public:
-  Viewer3D(Camera *camera);
+  Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline);
 
   void draw() override;
 

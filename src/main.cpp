@@ -9,7 +9,8 @@ int main(int argc, char **argv) {
   QApplication app(argc, argv);
 
   Camera *camera = new Camera();
-  Viewer3D *viewer = new Viewer3D(camera);
+  SkippyPipeline *skippyPipeline = new SkippyPipeline();
+  Viewer3D *viewer = new Viewer3D(camera, skippyPipeline);
   new MainWindow(viewer);
 
   return app.exec();

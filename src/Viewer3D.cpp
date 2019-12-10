@@ -1,6 +1,7 @@
 #include "Viewer3D.h"
 
-Viewer3D::Viewer3D(Camera *camera) : QOpenGLFunctions_4_3_Core() {
+Viewer3D::Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline)
+    : QOpenGLFunctions_4_3_Core(), skippyPipeline(skippyPipeline) {
   // Change the camera
   qglviewer::Camera *c = Viewer3D::camera();
   setCamera(camera);
@@ -12,13 +13,15 @@ void Viewer3D::draw() {
   glEnable(GL_LIGHTING);
   glColor3f(0.5, 0.5, 0.8);
 
-  //
+  // TODO : remove !! Juste for testing----- (remove orig at the same time)
   BasicGL::drawSphere(0, 0, 0, 1, BasicGL::optimalSlices(1, 0.5f),
                       BasicGL::optimalStacks(1, 0.5f));
 
   BasicGL::drawSphere(orig.x, orig.y, orig.z, 0.3,
                       BasicGL::optimalSlices(0.3, 0.5f),
                       BasicGL::optimalStacks(0.5, 0.5f));
+  //---------------------------------------
+
   //  mesh.draw();
 }
 
@@ -127,25 +130,25 @@ void Viewer3D::mouseDoubleClickEvent(QMouseEvent *e) {
   QGLViewer::mouseDoubleClickEvent(e);
 }
 
-void Viewer3D::mousePressEvent(QMouseEvent *e) {
-  QGLViewer::mousePressEvent(e);
-}
+void Viewer3D::mousePressEvent(QMouseEvent *e) { isPressed = true; }
 
 void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
-  //  QGLViewer::mouseMoveEvent(e);
-  //  qglviewer::Vec orig, dir;
-  bool found;
+  if (!isPressed)
+    return;
 
-  // get mouse ray in real world coordinate.
+  // TODO : remove ----- get mouse ray in real world coordinate.
+  bool found;
   orig = camera()->pointUnderPixel(e->pos(), found);
-  QPoint a = e->pos();
+  // ------------------
+
+  skippyPipeline->addSketchPoint(e->pos());
+
   update();
-  cout << a.x() << " , " << a.y() << endl;
-  //    cout <<  camera()->zNear() << endl;
 }
 
 void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
-  QGLViewer::mouseReleaseEvent(e);
+  isPressed = false;
+  skippyPipeline->drawInputSkechesPoint();
 }
 
 void Viewer3D::open_mesh() {
