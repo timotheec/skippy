@@ -2,6 +2,7 @@
 #define MYVIEWER_H
 
 // Mesh stuff:
+#include "Camera.h"
 #include "Mesh.h"
 
 // Parsing:
@@ -35,8 +36,10 @@ class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
 
   QWidget *controls;
 
+  qglviewer::Vec orig;
+
 public:
-  Viewer3D(QGLWidget *parent = NULL);
+  Viewer3D(Camera *camera);
 
   void draw() override;
 
@@ -69,10 +72,6 @@ public slots:
   void save_mesh();
 
   void showControls();
-
-  void saveCameraInFile(const QString &filename);
-
-  void openCameraFromFile(const QString &filename);
 
   void openCamera();
   void saveCamera();

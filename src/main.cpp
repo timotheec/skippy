@@ -8,7 +8,9 @@
 int main(int argc, char **argv) {
   QApplication app(argc, argv);
 
-  new MainWindow;
+  Camera *camera = new Camera();
+  Viewer3D *viewer = new Viewer3D(camera);
+  new MainWindow(viewer);
 
   return app.exec();
 }

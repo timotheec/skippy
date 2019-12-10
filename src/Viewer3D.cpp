@@ -1,13 +1,25 @@
 #include "Viewer3D.h"
 
-Viewer3D::Viewer3D(QGLWidget *parent)
-    : QGLViewer(parent), QOpenGLFunctions_4_3_Core() {}
+Viewer3D::Viewer3D(Camera *camera) : QOpenGLFunctions_4_3_Core() {
+  // Change the camera
+  qglviewer::Camera *c = Viewer3D::camera();
+  setCamera(camera);
+  delete c;
+}
 
 void Viewer3D::draw() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glColor3f(0.5, 0.5, 0.8);
-  mesh.draw();
+
+  //
+  BasicGL::drawSphere(0, 0, 0, 1, BasicGL::optimalSlices(1, 0.5f),
+                      BasicGL::optimalStacks(1, 0.5f));
+
+  BasicGL::drawSphere(orig.x, orig.y, orig.z, 0.3,
+                      BasicGL::optimalSlices(0.3, 0.5f),
+                      BasicGL::optimalStacks(0.5, 0.5f));
+  //  mesh.draw();
 }
 
 void Viewer3D::pickBackgroundColor() {
@@ -119,7 +131,18 @@ void Viewer3D::mousePressEvent(QMouseEvent *e) {
   QGLViewer::mousePressEvent(e);
 }
 
-void Viewer3D::mouseMoveEvent(QMouseEvent *e) { QGLViewer::mouseMoveEvent(e); }
+void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
+  //  QGLViewer::mouseMoveEvent(e);
+  //  qglviewer::Vec orig, dir;
+  bool found;
+
+  // get mouse ray in real world coordinate.
+  orig = camera()->pointUnderPixel(e->pos(), found);
+  QPoint a = e->pos();
+  update();
+  cout << a.x() << " , " << a.y() << endl;
+  //    cout <<  camera()->zNear() << endl;
+}
 
 void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
   QGLViewer::mouseReleaseEvent(e);
@@ -139,62 +162,12 @@ void Viewer3D::showControls() {
   controls->show();
 }
 
-void Viewer3D::saveCameraInFile(const QString &filename) {
-  std::ofstream out(filename.toUtf8());
-  if (!out)
-    exit(EXIT_FAILURE);
-  // << operator for point3 causes linking problem on windows
-  out << camera()->position()[0] << " \t" << camera()->position()[1] << " \t"
-      << camera()->position()[2]
-      << " \t"
-         " "
-      << camera()->viewDirection()[0] << " \t" << camera()->viewDirection()[1]
-      << " \t" << camera()->viewDirection()[2] << " \t"
-      << " " << camera()->upVector()[0] << " \t" << camera()->upVector()[1]
-      << " \t" << camera()->upVector()[2] << " \t"
-      << " " << camera()->fieldOfView();
-  out << std::endl;
-
-  out.close();
-}
-
-void Viewer3D::openCameraFromFile(const QString &filename) {
-
-  std::ifstream file;
-  file.open(filename.toStdString().c_str());
-
-  qglviewer::Vec pos;
-  qglviewer::Vec view;
-  qglviewer::Vec up;
-  float fov;
-
-  file >> (pos[0]) >> (pos[1]) >> (pos[2]) >> (view[0]) >> (view[1]) >>
-      (view[2]) >> (up[0]) >> (up[1]) >> (up[2]) >> fov;
-
-  camera()->setPosition(pos);
-  camera()->setViewDirection(view);
-  camera()->setUpVector(up);
-  camera()->setFieldOfView(fov);
-
-  camera()->computeModelViewMatrix();
-  camera()->computeProjectionMatrix();
-
+void Viewer3D::openCamera() {
+  static_cast<Camera *>(camera())->openCamera();
   update();
 }
 
-void Viewer3D::openCamera() {
-  QString fileName = QFileDialog::getOpenFileName(NULL, "", "*.cam");
-  if (!fileName.isNull()) { // got a file name
-    openCameraFromFile(fileName);
-  }
-}
-
-void Viewer3D::saveCamera() {
-  QString fileName = QFileDialog::getSaveFileName(NULL, "", "*.cam");
-  if (!fileName.isNull()) { // got a file name
-    saveCameraInFile(fileName);
-  }
-}
+void Viewer3D::saveCamera() { static_cast<Camera *>(camera())->saveCamera(); }
 
 void Viewer3D::saveSnapShotPlusPlus() {
   QString fileName = QFileDialog::getSaveFileName(NULL, "*.png", "");
@@ -202,6 +175,7 @@ void Viewer3D::saveSnapShotPlusPlus() {
     setSnapshotFormat("PNG");
     setSnapshotQuality(100);
     saveSnapshot(fileName);
-    saveCameraInFile(fileName + QString(".cam"));
+    static_cast<Camera *>(camera())->saveCameraInFile(fileName +
+                                                      QString(".cam"));
   }
 }

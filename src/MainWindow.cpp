@@ -1,9 +1,6 @@
 #include "MainWindow.h"
 
-MainWindow::MainWindow(QWidget *parent, Viewer3D *viewer)
-    : QMainWindow(parent), viewer(viewer) {
-  setupUi();
-}
+MainWindow::MainWindow(Viewer3D *viewer) : viewer(viewer) { setupUi(); }
 
 MainWindow::~MainWindow() { delete viewer; }
 

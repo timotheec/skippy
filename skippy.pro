@@ -20,13 +20,15 @@ HEADERS += \
     src/Viewer3D.h \
     src/MainWindow.h \
     src/geometry/Vertex.h \
-    src/geometry/Triangle.h
+    src/geometry/Triangle.h \
+    src/Camera.h
 SOURCES += \
     src/main.cpp \
     src/gl/BasicColors.cpp \
     src/gl/GLUtilityMethods.cpp \
     src/MainWindow.cpp \
-    src/Viewer3D.cpp
+    src/Viewer3D.cpp \
+    src/Camera.cpp
 
 EXT_DIR = extern
 

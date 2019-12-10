@@ -9,15 +9,14 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
 private:
-  Viewer3D *viewer = new Viewer3D;
+  Viewer3D *viewer;
   QToolBar *toolBar = new QToolBar;
 
   void setupUi();
   void setupToolbar();
 
 public:
-  explicit MainWindow(QWidget *parent = nullptr,
-                      Viewer3D *viewer = new Viewer3D);
+  explicit MainWindow(Viewer3D *viewer);
   ~MainWindow();
 
 signals:
