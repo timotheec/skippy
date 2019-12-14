@@ -1,6 +1,8 @@
 #ifndef SKIPPYPIPELINE_H
 #define SKIPPYPIPELINE_H
 
+#include "Camera.h"
+
 #include <QPoint>
 #include <vector>
 
@@ -10,11 +12,12 @@ class SkippyPipeline {
 public:
   SkippyPipeline();
 
-  void addSketchPoint(const QPoint &point);
+  void addSketchPoint(const QPoint &point, const Camera *camera);
   void drawInputSkechesPoint();
 
 private:
-  vector<QPoint> inputSketchesPoints;
+  vector<QPoint> inputSketchedPoints;
+  vector<qglviewer::Vec> projectedInptSketchedpoints;
   vector<QPoint> resampledInputPoints;
 };
 

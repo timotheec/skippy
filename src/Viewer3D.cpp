@@ -17,12 +17,10 @@ void Viewer3D::draw() {
   BasicGL::drawSphere(0, 0, 0, 1, BasicGL::optimalSlices(1, 0.5f),
                       BasicGL::optimalStacks(1, 0.5f));
 
-  BasicGL::drawSphere(orig.x, orig.y, orig.z, 0.3,
-                      BasicGL::optimalSlices(0.3, 0.5f),
-                      BasicGL::optimalStacks(0.5, 0.5f));
+  this->skippyPipeline->drawInputSkechesPoint();
   //---------------------------------------
 
-  //  mesh.draw();
+  mesh.draw();
 }
 
 void Viewer3D::pickBackgroundColor() {
@@ -46,6 +44,12 @@ void Viewer3D::init() {
 
   setMouseTracking(true); // Needed for MouseGrabber.
 
+  // Change standard action mouse bindings
+  setMouseBinding(Qt::NoModifier, Qt::RightButton, NO_CLICK_ACTION);
+  setMouseBinding(Qt::NoModifier, Qt::LeftButton, NO_CLICK_ACTION);
+  setMouseBinding(Qt::ControlModifier, Qt::LeftButton, CAMERA, ROTATE);
+  setMouseBinding(Qt::ControlModifier, Qt::RightButton, CAMERA, TRANSLATE);
+
   setBackgroundColor(QColor(255, 255, 255));
 
   // Lights:
@@ -66,8 +70,8 @@ void Viewer3D::init() {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glEnable(GL_COLOR_MATERIAL);
-
   //
+
   setSceneCenter(qglviewer::Vec(0, 0, 0));
   setSceneRadius(10.f);
   showEntireScene();
@@ -80,7 +84,7 @@ QString Viewer3D::helpString() const {
   text += "<h3>Participants</h3>";
   text += "<ul>";
   text += "<li>jmt</li>";
-  text += "<li>...</li>";
+  text += "<li>timotheec</li>";
   text += "</ul>";
   text += "<h3>Basics</h3>";
   text += "<p>";
@@ -130,25 +134,23 @@ void Viewer3D::mouseDoubleClickEvent(QMouseEvent *e) {
   QGLViewer::mouseDoubleClickEvent(e);
 }
 
-void Viewer3D::mousePressEvent(QMouseEvent *e) { isPressed = true; }
+void Viewer3D::mousePressEvent(QMouseEvent *e) {
+  QGLViewer::mousePressEvent(e);
+  if (e->button() == Qt::LeftButton && e->modifiers() != Qt::ControlModifier)
+    isPressed = true;
+}
 
 void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
+  QGLViewer::mouseMoveEvent(e);
   if (!isPressed)
     return;
-
-  // TODO : remove ----- get mouse ray in real world coordinate.
-  bool found;
-  orig = camera()->pointUnderPixel(e->pos(), found);
-  // ------------------
-
-  skippyPipeline->addSketchPoint(e->pos());
-
+  skippyPipeline->addSketchPoint(e->pos(), static_cast<Camera *>(camera()));
   update();
 }
 
 void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
+  QGLViewer::mouseReleaseEvent(e);
   isPressed = false;
-  skippyPipeline->drawInputSkechesPoint();
 }
 
 void Viewer3D::open_mesh() {
