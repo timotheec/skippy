@@ -22,7 +22,8 @@ HEADERS += \
     src/geometry/Vertex.h \
     src/geometry/Triangle.h \
     src/Camera.h \
-    src/SkippyPipeline.h
+    src/SkippyPipeline.h \
+    src/utils.h
 SOURCES += \
     src/main.cpp \
     src/gl/BasicColors.cpp \

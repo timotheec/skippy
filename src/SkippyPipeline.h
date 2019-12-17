@@ -2,6 +2,7 @@
 #define SKIPPYPIPELINE_H
 
 #include "Camera.h"
+#include "utils.h"
 
 #include <QPoint>
 #include <vector>
@@ -14,10 +15,12 @@ public:
 
   void addSketchPoint(const QPoint &point, const Camera *camera);
   void drawInputSkechesPoint();
+  void drawInputRays();
 
 private:
   vector<QPoint> inputSketchedPoints;
   vector<qglviewer::Vec> projectedInptSketchedpoints;
+  vector<skippy::Ray> inputRays;
   vector<QPoint> resampledInputPoints;
 };
 

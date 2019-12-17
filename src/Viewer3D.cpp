@@ -17,7 +17,8 @@ void Viewer3D::draw() {
   BasicGL::drawSphere(0, 0, 0, 1, BasicGL::optimalSlices(1, 0.5f),
                       BasicGL::optimalStacks(1, 0.5f));
 
-  this->skippyPipeline->drawInputSkechesPoint();
+  skippyPipeline->drawInputSkechesPoint();
+  skippyPipeline->drawInputRays();
   //---------------------------------------
 
   mesh.draw();
