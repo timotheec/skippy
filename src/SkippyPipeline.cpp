@@ -25,13 +25,13 @@ void SkippyPipeline::drawInputSkechesPoint() {
   }
 }
 
-void SkippyPipeline::drawInputRays()
-{
-    for(auto ray : inputRays) {
-        qglviewer::Vec dest = 5.0 * ray.dir;
-        glBegin(GL_LINES);
-        glVertex3d(ray.orig.x, ray.orig.y, ray.orig.z);
-        glVertex3d(dest.x, dest.y, dest.z);
-        glEnd();
-    }
+void SkippyPipeline::drawInputRays() {
+  const double DISPLAYED_RAY_LENGHT = 20.0;
+  for (auto ray : inputRays) {
+    qglviewer::Vec dest = ray.orig + DISPLAYED_RAY_LENGHT * ray.dir;
+    glBegin(GL_LINES);
+    glVertex3d(ray.orig.x, ray.orig.y, ray.orig.z);
+    glVertex3d(dest.x, dest.y, dest.z);
+    glEnd();
+  }
 }
