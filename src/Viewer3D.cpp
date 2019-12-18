@@ -13,9 +13,8 @@ void Viewer3D::draw() {
   glEnable(GL_LIGHTING);
   glColor3f(0.5, 0.5, 0.8);
 
-  // TODO : remove !! Juste for testing----- (remove orig at the same time)
-  BasicGL::drawSphere(0, 0, 0, 1, BasicGL::optimalSlices(1, 0.5f),
-                      BasicGL::optimalStacks(1, 0.5f));
+  // TODO : remove !! Juste for testing--
+  scene->draw();
 
   skippyPipeline->drawInputSkechesPoint();
   skippyPipeline->drawInputRays();
@@ -23,6 +22,12 @@ void Viewer3D::draw() {
 
   mesh.draw();
 }
+
+void Viewer3D::postSelection(const QPoint &point) {
+  cout << "Selected : " << selectedName() << endl;
+}
+
+void Viewer3D::drawWithNames() { scene->drawWithName(); }
 
 void Viewer3D::pickBackgroundColor() {
   QColor _bc = QColorDialog::getColor(this->backgroundColor(), this);
@@ -163,7 +168,7 @@ void Viewer3D::open_mesh() {
 void Viewer3D::save_mesh() { mesh.save(); }
 
 void Viewer3D::showControls() {
-  // Show controls :
+  //   Show controls :
   controls->close();
   controls->show();
 }

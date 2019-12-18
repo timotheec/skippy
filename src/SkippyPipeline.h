@@ -2,7 +2,7 @@
 #define SKIPPYPIPELINE_H
 
 #include "Camera.h"
-#include "utils.h"
+#include "Utils.h"
 
 #include <QPoint>
 #include <vector>

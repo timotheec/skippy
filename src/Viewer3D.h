@@ -28,6 +28,8 @@
 #include <QToolBar>
 
 #include "qt/QSmartAction.h"
+#include "geometry/Shape.h" // TODO : Remove
+#include "geometry/Sphere.h" // TODO : Remove
 
 class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
   Q_OBJECT
@@ -36,16 +38,20 @@ class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
 
   QWidget *controls;
 
-  qglviewer::Vec orig;
-
   SkippyPipeline *skippyPipeline;
 
   bool isPressed = false;
+
+  Shape* scene = new Sphere;
 
 public:
   Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline);
 
   void draw() override;
+
+  void postSelection(const QPoint &point) override;
+
+  void drawWithNames() override;
 
   void pickBackgroundColor();
 
