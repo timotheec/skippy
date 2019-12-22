@@ -11,6 +11,12 @@ void Sphere::draw() const {
                       BasicGL::optimalStacks(radius, 0.5f));
 }
 
+double Sphere::distanceToLine(const skippy::Ray &ray) const {
+  qglviewer::Vec ac = center - ray.orig;
+  double adNorm = ac * ray.dir;
+  return sqrt(pow(ac.norm(), 2) - pow(adNorm, 2)) - radius;
+}
+
 ostream &operator<<(ostream &os, const Sphere &sphere) {
   return os << "{ centre: " << sphere.center << " "
             << "radius: " << sphere.radius << " }";

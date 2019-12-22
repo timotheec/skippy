@@ -18,11 +18,14 @@ void Viewer3D::draw() {
 
   // skippyPipeline->drawInputSkechesPoint();
   //  skippyPipeline->drawInputRays();
-  skippyPipeline->drawOnSequence();
+  if (!isPressed)
+    skippyPipeline->drawOnSequence();
   //---------------------------------------
 
   mesh.draw();
 }
+
+void Viewer3D::drawWithNames() { scene.drawWithNames(); }
 
 void Viewer3D::postSelection(const QPoint &point) {
   //  skippyPipeline->addSketchPoint(point, static_cast<Camera *>(camera()));
@@ -33,25 +36,48 @@ void Viewer3D::postSelection(const QPoint &point) {
   // Small offset to make point clearly visible.
   seqPoint.pos -= 0.01f * seqPoint.ray.dir;
 
-  if (selectedName() >= 0)
+  if (selectedName() >= 0 && found)
     skippyPipeline->addToOnSequence(seqPoint);
 }
 
-void Viewer3D::drawWithNames() { scene.drawWithNames(); }
-
-void Viewer3D::pickBackgroundColor() {
-  QColor _bc = QColorDialog::getColor(this->backgroundColor(), this);
-  if (_bc.isValid()) {
-    this->setBackgroundColor(_bc);
-    this->update();
+void Viewer3D::mouseDoubleClickEvent(QMouseEvent *e) {
+  if ((e->modifiers() & Qt::ControlModifier) &&
+      (e->button() == Qt::RightButton)) {
+    pickBackgroundColor();
+    return;
   }
+
+  if ((e->modifiers() & Qt::ControlModifier) &&
+      (e->button() == Qt::LeftButton)) {
+    showControls();
+    return;
+  }
+
+  QGLViewer::mouseDoubleClickEvent(e);
 }
 
-void Viewer3D::adjustCamera(const point3d &bb, const point3d &BB) {
-  point3d const &center = (bb + BB) / 2.f;
-  setSceneCenter(qglviewer::Vec(center[0], center[1], center[2]));
-  setSceneRadius(1.5f * (BB - bb).norm());
-  showEntireScene();
+void Viewer3D::mousePressEvent(QMouseEvent *e) {
+  QGLViewer::mousePressEvent(e);
+  if (e->button() == Qt::LeftButton && e->modifiers() != Qt::ControlModifier)
+    isPressed = true;
+}
+
+void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
+  QGLViewer::mouseMoveEvent(e);
+  if (!isPressed)
+    return;
+
+  beginSelection(e->pos());
+  drawWithNames();
+  endSelection(e->pos());
+  postSelection(e->pos());
+
+  update();
+}
+
+void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
+  QGLViewer::mouseReleaseEvent(e);
+  isPressed = false;
 }
 
 void Viewer3D::init() {
@@ -135,46 +161,6 @@ void Viewer3D::keyPressEvent(QKeyEvent *event) {
   }
 }
 
-void Viewer3D::mouseDoubleClickEvent(QMouseEvent *e) {
-  if ((e->modifiers() & Qt::ControlModifier) &&
-      (e->button() == Qt::RightButton)) {
-    pickBackgroundColor();
-    return;
-  }
-
-  if ((e->modifiers() & Qt::ControlModifier) &&
-      (e->button() == Qt::LeftButton)) {
-    showControls();
-    return;
-  }
-
-  QGLViewer::mouseDoubleClickEvent(e);
-}
-
-void Viewer3D::mousePressEvent(QMouseEvent *e) {
-  QGLViewer::mousePressEvent(e);
-  if (e->button() == Qt::LeftButton && e->modifiers() != Qt::ControlModifier)
-    isPressed = true;
-}
-
-void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
-  QGLViewer::mouseMoveEvent(e);
-  if (!isPressed)
-    return;
-
-  beginSelection(e->pos());
-  drawWithNames();
-  endSelection(e->pos());
-  postSelection(e->pos());
-
-  update();
-}
-
-void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
-  QGLViewer::mouseReleaseEvent(e);
-  isPressed = false;
-}
-
 void Viewer3D::open_mesh() {
   mesh.open();
   adjustCamera(mesh.minPoint, mesh.maxPoint);
@@ -205,4 +191,19 @@ void Viewer3D::saveSnapShotPlusPlus() {
     static_cast<Camera *>(camera())->saveCameraInFile(fileName +
                                                       QString(".cam"));
   }
+}
+
+void Viewer3D::pickBackgroundColor() {
+  QColor _bc = QColorDialog::getColor(this->backgroundColor(), this);
+  if (_bc.isValid()) {
+    this->setBackgroundColor(_bc);
+    this->update();
+  }
+}
+
+void Viewer3D::adjustCamera(const point3d &bb, const point3d &BB) {
+  point3d const &center = (bb + BB) / 2.f;
+  setSceneCenter(qglviewer::Vec(center[0], center[1], center[2]));
+  setSceneRadius(1.5f * (BB - bb).norm());
+  showEntireScene();
 }

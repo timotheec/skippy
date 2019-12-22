@@ -1,4 +1,5 @@
 #include "SkippyPipeline.h"
+#include "geometry/Sphere.h"
 #include "gl/GLUtilityMethods.h"
 
 #include <iostream>
@@ -23,9 +24,8 @@ void SkippyPipeline::addToOnSequence(const PointSequence &point) {
 
 void SkippyPipeline::drawInputSkechesPoint() {
   for (auto point : projectedInptSketchedpoints) {
-    BasicGL::drawSphere(point.x, point.y, point.z, 0.3f,
-                        BasicGL::optimalSlices(0.3f, 0.5f),
-                        BasicGL::optimalStacks(0.5f, 0.5f));
+    Sphere sphere(point, 0.3);
+    sphere.draw();
   }
 }
 
@@ -49,8 +49,7 @@ void SkippyPipeline::drawOnSequence() {
     glVertex3dv(pointSeq.ray.orig);
     glVertex3dv(dest);
     glEnd();
-    BasicGL::drawSphere(pointSeq.pos.x, pointSeq.pos.y, pointSeq.pos.z, 0.3f,
-                        BasicGL::optimalSlices(0.3f, 0.5f),
-                        BasicGL::optimalStacks(0.5f, 0.5f));
+    Sphere sphere(pointSeq.pos, 0.3);
+    sphere.draw();
   }
 }
