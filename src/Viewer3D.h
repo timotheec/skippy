@@ -28,8 +28,7 @@
 #include <QToolBar>
 
 #include "qt/QSmartAction.h"
-#include "geometry/Shape.h" // TODO : Remove
-#include "geometry/Sphere.h" // TODO : Remove
+#include "geometry/Scene3d.h"
 
 class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
   Q_OBJECT
@@ -42,7 +41,7 @@ class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
 
   bool isPressed = false;
 
-  Shape* scene = new Sphere;
+  Scene3D scene;
 
 public:
   Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline);

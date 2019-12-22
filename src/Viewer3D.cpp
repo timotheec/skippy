@@ -1,4 +1,5 @@
 #include "Viewer3D.h"
+#include "Utils.h"
 
 Viewer3D::Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline)
     : QOpenGLFunctions_4_3_Core(), skippyPipeline(skippyPipeline) {
@@ -13,21 +14,30 @@ void Viewer3D::draw() {
   glEnable(GL_LIGHTING);
   glColor3f(0.5, 0.5, 0.8);
 
-  // TODO : remove !! Juste for testing--
-  scene->draw();
+  scene.draw();
 
-  skippyPipeline->drawInputSkechesPoint();
-  skippyPipeline->drawInputRays();
+  // skippyPipeline->drawInputSkechesPoint();
+  //  skippyPipeline->drawInputRays();
+  skippyPipeline->drawOnSequence();
   //---------------------------------------
 
   mesh.draw();
 }
 
 void Viewer3D::postSelection(const QPoint &point) {
-  cout << "Selected : " << selectedName() << endl;
+  //  skippyPipeline->addSketchPoint(point, static_cast<Camera *>(camera()));
+  skippy::PointSequence seqPoint;
+  camera()->convertClickToLine(point, seqPoint.ray.orig, seqPoint.ray.dir);
+  bool found;
+  seqPoint.pos = camera()->pointUnderPixel(point, found);
+  // Small offset to make point clearly visible.
+  seqPoint.pos -= 0.01f * seqPoint.ray.dir;
+
+  if (selectedName() >= 0)
+    skippyPipeline->addToOnSequence(seqPoint);
 }
 
-void Viewer3D::drawWithNames() { scene->drawWithName(); }
+void Viewer3D::drawWithNames() { scene.drawWithNames(); }
 
 void Viewer3D::pickBackgroundColor() {
   QColor _bc = QColorDialog::getColor(this->backgroundColor(), this);
@@ -53,6 +63,7 @@ void Viewer3D::init() {
   // Change standard action mouse bindings
   setMouseBinding(Qt::NoModifier, Qt::RightButton, NO_CLICK_ACTION);
   setMouseBinding(Qt::NoModifier, Qt::LeftButton, NO_CLICK_ACTION);
+  setMouseBinding(Qt::ShiftModifier, Qt::LeftButton, NO_CLICK_ACTION);
   setMouseBinding(Qt::ControlModifier, Qt::LeftButton, CAMERA, ROTATE);
   setMouseBinding(Qt::ControlModifier, Qt::RightButton, CAMERA, TRANSLATE);
 
@@ -150,7 +161,12 @@ void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
   QGLViewer::mouseMoveEvent(e);
   if (!isPressed)
     return;
-  skippyPipeline->addSketchPoint(e->pos(), static_cast<Camera *>(camera()));
+
+  beginSelection(e->pos());
+  drawWithNames();
+  endSelection(e->pos());
+  postSelection(e->pos());
+
   update();
 }
 

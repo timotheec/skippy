@@ -25,7 +25,8 @@ HEADERS += \
     src/SkippyPipeline.h \
     src/geometry/Shape.h \
     src/Utils.h \
-    src/geometry/Sphere.h
+    src/geometry/Sphere.h \
+    src/geometry/Scene3d.h
 SOURCES += \
     src/main.cpp \
     src/gl/BasicColors.cpp \
@@ -35,7 +36,8 @@ SOURCES += \
     src/Camera.cpp \
     src/SkippyPipeline.cpp \
     src/geometry/Shape.cpp \
-    src/geometry/Sphere.cpp
+    src/geometry/Sphere.cpp \
+    src/geometry/Scene3d.cpp
 
 EXT_DIR = extern
 

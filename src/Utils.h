@@ -10,14 +10,17 @@ struct Ray {
   qglviewer::Vec dir;
 };
 
-struct PointSquence {
+struct PointSequence {
   Ray ray;
   qglviewer::Vec pos;
   double heigth;
 };
 
 struct PointsSequence {
-    std::vector<PointsSequence> pointsSeq;
+  std::vector<PointSequence> pointsSeq;
+  void addPoint(const PointSequence &point) {
+    pointsSeq.push_back(point);
+  }
 };
 
 } // namespace skippy
