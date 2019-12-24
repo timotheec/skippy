@@ -22,6 +22,10 @@ void SkippyPipeline::addToOnSequence(const PointSequence &point) {
   onSequence.addPoint(point);
 }
 
+void SkippyPipeline::addToOffSequence(const PointSequence &point) {
+  offSequence.addPoint(point);
+}
+
 void SkippyPipeline::drawInputSkechesPoint() {
   for (auto point : projectedInptSketchedpoints) {
     Sphere sphere(point, 0.3);
@@ -51,5 +55,16 @@ void SkippyPipeline::drawOnSequence() {
     glEnd();
     Sphere sphere(pointSeq.pos, 0.3);
     sphere.draw();
+  }
+}
+
+void SkippyPipeline::updateOffMaxHeight(double heigth, unsigned int noSeq) {
+  if (noSeq == 0 && heigth > offMaxHeigths.first)
+    offMaxHeigths.first = heigth;
+  else if (noSeq == 1 && heigth > offMaxHeigths.second)
+    offMaxHeigths.second = heigth;
+  else if (noSeq > 1) {
+    cout << "Sequence numero have to be 0 or 1." << endl;
+    exit(EXIT_FAILURE);
   }
 }

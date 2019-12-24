@@ -1,5 +1,6 @@
 #include "Viewer3D.h"
 #include "Utils.h"
+#include "geometry/Sphere.h"
 
 Viewer3D::Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline)
     : QOpenGLFunctions_4_3_Core(), skippyPipeline(skippyPipeline) {
@@ -36,8 +37,19 @@ void Viewer3D::postSelection(const QPoint &point) {
   // Small offset to make point clearly visible.
   seqPoint.pos -= 0.01f * seqPoint.ray.dir;
 
-  if (selectedName() >= 0 && found)
+  // TODO: tenporary (only 2 seqence of off points are possible)
+  static unsigned int noSeq = 0;
+
+  if (selectedName() >= 0 && found) {
+    noSeq = 1;
     skippyPipeline->addToOnSequence(seqPoint);
+  } else {
+    // TODO : temporary distance to the first sphere
+    seqPoint.heigth = static_pointer_cast<Sphere>(scene.getObjects()[0])
+                          ->distanceToLine(seqPoint.ray);
+    skippyPipeline->addToOffSequence(seqPoint);
+    skippyPipeline->updateOffMaxHeight(seqPoint.heigth, noSeq);
+  }
 }
 
 void Viewer3D::mouseDoubleClickEvent(QMouseEvent *e) {
