@@ -90,6 +90,8 @@ void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
 void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
   QGLViewer::mouseReleaseEvent(e);
   isPressed = false;
+
+  skippyPipeline->computeOnPointsHeigth();
 }
 
 void Viewer3D::init() {

@@ -5,8 +5,8 @@
 #include "Utils.h"
 
 #include <QPoint>
-#include <vector>
 #include <utility>
+#include <vector>
 
 using namespace std;
 using namespace skippy;
@@ -22,8 +22,10 @@ public:
   void drawInputRays();
   void drawOnSequence();
 
-  // Temporary method to update the max heigth of the off sequence (could be 0 or 1 for now)
+  // Temporary method to update the max heigth of the off sequence (could be 0
+  // or 1 for now)
   void updateOffMaxHeight(double height, unsigned int noSeq);
+  void computeOnPointsHeigth();
 
 private:
   vector<QPoint> inputSketchedPoints;
@@ -33,7 +35,8 @@ private:
   PointsSequence onSequence;
   PointsSequence offSequence;
 
-   // Temporary attribute to keep the max heigths of the off points for the sequence 0 and 1
+  // Temporary attribute to keep the max heigths of the off points for the
+  // sequence 0 and 1
   pair<double, double> offMaxHeigths = make_pair(0.0, 0.0);
 };
 

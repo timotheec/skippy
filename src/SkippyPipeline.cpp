@@ -68,3 +68,10 @@ void SkippyPipeline::updateOffMaxHeight(double heigth, unsigned int noSeq) {
     exit(EXIT_FAILURE);
   }
 }
+
+void SkippyPipeline::computeOnPointsHeigth() {
+  for (uint i = 0; i < onSequence.pointsSeq.size(); i++)
+    onSequence.pointsSeq[i].heigth =
+        lerp(offMaxHeigths.first, offMaxHeigths.second,
+             double(i) / (onSequence.pointsSeq.size() - 1));
+}
