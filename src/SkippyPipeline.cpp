@@ -53,8 +53,22 @@ void SkippyPipeline::drawOnSequence() {
     glVertex3dv(pointSeq.ray.orig);
     glVertex3dv(dest);
     glEnd();
-    Sphere sphere(pointSeq.pos, 0.3);
-    sphere.draw();
+
+    //---- Draw on points at the rigth heigth ---
+    qglviewer::Vec p1(0, 0, 0);
+    qglviewer::Vec p2(0, 0, 0);
+
+    // TODO : hardcoded iso sphere, I assume there is only one sphere (pos :
+    // 0,0,0 and radius : 1)
+    Sphere isoSphere(qglviewer::Vec(0, 0, 0), 1.0 + pointSeq.heigth);
+    bool isIntersected = isoSphere.intersect(pointSeq.ray, p1, p2);
+    if (isIntersected) {
+      Sphere sphere1(p1, 0.3);
+      sphere1.draw();
+      Sphere sphere2(p2, 0.3);
+      sphere2.draw();
+    }
+    //--------------------------------------------
   }
 }
 
