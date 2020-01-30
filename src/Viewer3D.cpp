@@ -20,7 +20,8 @@ void Viewer3D::draw() {
   // skippyPipeline->drawInputSkechesPoint();
   //  skippyPipeline->drawInputRays();
   if (!isPressed)
-    skippyPipeline->drawOnSequence();
+    skippyPipeline->drawOnCandidates();
+  // skippyPipeline->drawOnSequence();
   //---------------------------------------
 
   mesh.draw();
@@ -94,6 +95,7 @@ void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
   isPressed = false;
 
   skippyPipeline->computeOnPointsHeigth();
+  skippyPipeline->computeOnCandidates();
 }
 
 void Viewer3D::init() {

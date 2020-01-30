@@ -21,11 +21,14 @@ public:
   void drawInputSkechesPoint();
   void drawInputRays();
   void drawOnSequence();
+  void drawOnCandidates();
 
   // Temporary method to update the max heigth of the off sequence (could be 0
   // or 1 for now)
   void updateOffMaxHeight(double height, unsigned int noSeq);
   void computeOnPointsHeigth();
+
+  void computeOnCandidates();
 
 private:
   vector<QPoint> inputSketchedPoints;
@@ -34,6 +37,7 @@ private:
   vector<QPoint> resampledInputPoints;
   PointsSequence onSequence;
   PointsSequence offSequence;
+  PointsSequence onCandidates;
 
   // Temporary attribute to keep the max heigths of the off points for the
   // sequence 0 and 1

@@ -16,12 +16,25 @@ struct PointSequence {
   Ray ray;
   qglviewer::Vec pos;
   double heigth;
+  int intersectOrder;
 
   friend std::ostream &operator<<(std::ostream &out,
                                   const PointSequence &pointSeq) {
     return out << "{ pos : " << pointSeq.pos
                << "; heigth : " << pointSeq.heigth;
   }
+};
+
+struct OnPointSegment {
+    std::vector<PointSequence> vertices;
+    int intersectOrder;
+    int startVertex, endVertex;
+};
+
+struct OffPointSegment {
+    std::vector<PointSequence> vertices;
+    int startIntersectOrder, endIntersectOrder;
+    int startVertex, endVertex;
 };
 
 struct PointsSequence {

@@ -54,21 +54,24 @@ void SkippyPipeline::drawOnSequence() {
     glVertex3dv(dest);
     glEnd();
 
-    //---- Draw on points at the rigth heigth ---
-    qglviewer::Vec p1(0, 0, 0);
-    qglviewer::Vec p2(0, 0, 0);
+    Sphere sphere(pointSeq.pos, 0.3);
+    sphere.draw();
+  }
+}
 
-    // TODO : hardcoded iso sphere, I assume there is only one sphere (pos :
-    // 0,0,0 and radius : 1)
-    Sphere isoSphere(qglviewer::Vec(0, 0, 0), 1.0 + pointSeq.heigth);
-    bool isIntersected = isoSphere.intersect(pointSeq.ray, p1, p2);
-    if (isIntersected) {
-      Sphere sphere1(p1, 0.3);
-      sphere1.draw();
-      Sphere sphere2(p2, 0.3);
-      sphere2.draw();
-    }
-    //--------------------------------------------
+void SkippyPipeline::drawOnCandidates() {
+  const double DISPLAYED_RAY_LENGHT = 20.0;
+  for (auto onCandidate : onCandidates.pointsSeq) {
+    qglviewer::Vec dest =
+        onCandidate.ray.orig + DISPLAYED_RAY_LENGHT * onCandidate.ray.dir;
+    glBegin(GL_LINES);
+    glVertex3dv(onCandidate.ray.orig);
+    glVertex3dv(dest);
+    glEnd();
+
+    Sphere sphere(onCandidate.pos, 0.3);
+    glColor3f(0.5f, 0.2f, onCandidate.intersectOrder);
+    sphere.draw();
   }
 }
 
@@ -88,4 +91,28 @@ void SkippyPipeline::computeOnPointsHeigth() {
     onSequence.pointsSeq[i].heigth =
         lerp(offMaxHeigths.first, offMaxHeigths.second,
              double(i) / (onSequence.pointsSeq.size() - 1));
+}
+
+void SkippyPipeline::computeOnCandidates() {
+  // TODO : for the moment only 2 intersetions are possible
+  for (auto pointSeq : onSequence.pointsSeq) {
+    qglviewer::Vec p1(0, 0, 0);
+    qglviewer::Vec p2(0, 0, 0);
+
+    // TODO : hardcoded iso sphere, I assume there is only one sphere (pos :
+    // 0,0,0 and radius : 1)
+    Sphere isoSphere(qglviewer::Vec(0, 0, 0), 1.0 + pointSeq.heigth);
+    bool isIntersected = isoSphere.intersect(pointSeq.ray, p1, p2);
+    if (isIntersected) {
+      pointSeq.pos = p1;
+      pointSeq.intersectOrder = 0;
+      onCandidates.addPoint(pointSeq);
+
+      if (p1 != p2) {
+        pointSeq.pos = p2;
+        pointSeq.intersectOrder = 1;
+        onCandidates.addPoint(pointSeq);
+      }
+    }
+  }
 }
