@@ -30,7 +30,9 @@ void Viewer3D::drawWithNames() { scene.drawWithNames(); }
 
 void Viewer3D::postSelection(const QPoint &point) {
   //  skippyPipeline->addSketchPoint(point, static_cast<Camera *>(camera()));
+  static int rayOrder = 0;
   skippy::PointSequence seqPoint;
+  seqPoint.ray.index = rayOrder++;
   camera()->convertClickToLine(point, seqPoint.ray.orig, seqPoint.ray.dir);
   bool found;
   seqPoint.pos = camera()->pointUnderPixel(point, found);

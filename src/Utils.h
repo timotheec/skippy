@@ -9,6 +9,7 @@ namespace skippy {
 struct Ray {
   qglviewer::Vec orig;
   qglviewer::Vec dir;
+  int index = -1; // if index < 0, that's mean the index is invalid
 };
 
 struct PointSequence {
