@@ -29,6 +29,7 @@ public:
   void computeOnPointsHeigth();
 
   void computeOnCandidates();
+  void buildGraph();
 
 private:
   vector<QPoint> inputSketchedPoints;

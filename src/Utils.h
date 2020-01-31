@@ -20,21 +20,10 @@ struct PointSequence {
 
   friend std::ostream &operator<<(std::ostream &out,
                                   const PointSequence &pointSeq) {
-    return out << "{ pos : " << pointSeq.pos
-               << "; heigth : " << pointSeq.heigth;
+    return out << "{ pos : " << pointSeq.pos << "; heigth : " << pointSeq.heigth
+               << "; intersecOrder : " << pointSeq.intersectOrder
+               << "; rayIndex : " << pointSeq.ray.index << " }";
   }
-};
-
-struct OnPointSegment {
-    std::vector<PointSequence> vertices;
-    int intersectOrder;
-    int startVertex, endVertex;
-};
-
-struct OffPointSegment {
-    std::vector<PointSequence> vertices;
-    int startIntersectOrder, endIntersectOrder;
-    int startVertex, endVertex;
 };
 
 struct PointsSequence {
@@ -43,14 +32,36 @@ struct PointsSequence {
 
   friend std::ostream &operator<<(std::ostream &out,
                                   const PointsSequence &pointsSeq) {
-      out << "{ ";
-      for(auto point : pointsSeq.pointsSeq)
-          out << point << std::endl;
-      return out << " }" << std::endl;
+    out << "{ ";
+    for (auto &point : pointsSeq.pointsSeq)
+      out << point << std::endl;
+    return out << " }";
   }
 };
 
-inline double lerp(double v0, double v1, double t) { return (1 - t) * v0 + t * v1; }
+struct OnSegment {
+  PointsSequence vertices;
+  int intersectOrder;
+  int startVertex, endVertex;
+
+  friend std::ostream &operator<<(std::ostream &out,
+                                  const OnSegment &onSegment) {
+    return out << "{ intersecOrder : " << onSegment.intersectOrder
+               << "; s : " << onSegment.startVertex
+               << "; e : " << onSegment.endVertex << std::endl
+               << onSegment.vertices << " }";
+  }
+};
+
+struct OffSegment {
+  PointsSequence vertices;
+  int startIntersectOrder, endIntersectOrder;
+  int startVertex, endVertex;
+};
+
+inline double lerp(double v0, double v1, double t) {
+  return (1 - t) * v0 + t * v1;
+}
 
 } // namespace skippy
 

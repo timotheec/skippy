@@ -1,4 +1,5 @@
 #include "SkippyPipeline.h"
+#include "SkippyGraph.h"
 #include "geometry/Sphere.h"
 #include "gl/GLUtilityMethods.h"
 
@@ -116,3 +117,5 @@ void SkippyPipeline::computeOnCandidates() {
     }
   }
 }
+
+void SkippyPipeline::buildGraph() { SkippyGraph skippyGraph(onCandidates); }

@@ -96,6 +96,7 @@ void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
 
   skippyPipeline->computeOnPointsHeigth();
   skippyPipeline->computeOnCandidates();
+  skippyPipeline->buildGraph();
 }
 
 void Viewer3D::init() {
