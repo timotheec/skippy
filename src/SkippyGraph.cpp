@@ -1,4 +1,5 @@
 #include "SkippyGraph.h"
+#include <algorithm>
 #include <iostream>
 
 SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
@@ -6,18 +7,18 @@ SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
   buildOnSegments(onCandidates);
   createNodes();
   connectOnSegments();
-  findAllPaths();
+  findAllLongestPaths();
 }
 
 void SkippyGraph::print() const {
   //  for (const auto &onSegment : nodes) {
   //    cout << onSegment << endl;
   //  }
-  //  for (auto &path : paths) {
-  //    for (auto &onSegment : path)
-  //      cout << *onSegment;
-  //    cout << endl;
-  //  }
+  for (auto &path : paths) {
+    for (auto &onSegment : path)
+      cout << *onSegment;
+    cout << endl;
+  }
 }
 
 void SkippyGraph::buildOnSegments(const PointsSequence &onCandidates) {
@@ -63,9 +64,21 @@ void SkippyGraph::createNodes() {
     nodes.push_back({&onSegment, {}});
 }
 
-void SkippyGraph::findAllPaths() {
+void SkippyGraph::findAllLongestPaths() {
   for (auto &node : nodes)
     findAllPaths(node, {});
+
+  uint maxSize = 0;
+  for (auto &path : paths)
+    if (path.size() > maxSize)
+      maxSize = path.size();
+
+  // erase all smaller paths
+  paths.erase(remove_if(paths.begin(), paths.end(),
+                        [maxSize](vector<OnSegment *> const &path) {
+                          return path.size() < maxSize;
+                        }),
+              paths.end());
 }
 
 void SkippyGraph::findAllPaths(const SkippyNode &node,
