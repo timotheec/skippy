@@ -11,13 +11,9 @@ struct SkippyNode {
   vector<SkippyNode *> adjacency;
 
   friend std::ostream &operator<<(std::ostream &out, const SkippyNode &node) {
-    out << "{ g<" << node.onSegment->intersectOrder << ">("
-        << node.onSegment->startVertex << ":" << node.onSegment->endVertex
-        << "), {";
+    out << "{ " << *node.onSegment << ", {";
     for (auto &adjNode : node.adjacency)
-      out << "g<" << adjNode->onSegment->intersectOrder << ">("
-          << adjNode->onSegment->startVertex << ":"
-          << adjNode->onSegment->endVertex << "),";
+      out << *(adjNode->onSegment) << ",";
     return out << " } }";
   }
 };
@@ -32,9 +28,11 @@ private:
   void buildOnSegments(const PointsSequence &onCandidates);
   void connectOnSegments();
   void createNodes();
+  void findPaths();
 
   vector<OnSegment> onSegments;
   vector<SkippyNode> nodes;
+  vector<vector<OnSegment *>> paths;
 };
 
 #endif // SKIPPYGRAPH_H

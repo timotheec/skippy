@@ -6,6 +6,7 @@ SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
   buildOnSegments(onCandidates);
   createNodes();
   connectOnSegments();
+  print();
 }
 
 void SkippyGraph::print() const {
@@ -54,5 +55,10 @@ void SkippyGraph::connectOnSegments() {
 
 void SkippyGraph::createNodes() {
   for (auto &onSegment : onSegments)
-    nodes.push_back({&onSegment, {}});
+      nodes.push_back({&onSegment, {}});
+}
+
+void SkippyGraph::findPaths()
+{
+
 }

@@ -44,12 +44,16 @@ struct OnSegment {
   int intersectOrder;
   int startVertex, endVertex;
 
+  void print() {
+    std::cout << "{ intersecOrder : " << intersectOrder
+              << "; s : " << startVertex << "; e : " << endVertex << std::endl
+              << vertices << " }";
+  }
+
   friend std::ostream &operator<<(std::ostream &out,
                                   const OnSegment &onSegment) {
-    return out << "{ intersecOrder : " << onSegment.intersectOrder
-               << "; s : " << onSegment.startVertex
-               << "; e : " << onSegment.endVertex << std::endl
-               << onSegment.vertices << " }";
+    return out << "g<" << onSegment.intersectOrder << ">("
+               << onSegment.startVertex << ":" << onSegment.endVertex << ")";
   }
 };
 
