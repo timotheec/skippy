@@ -1,7 +1,7 @@
 #ifndef GLUTILITYMETHODS_H
 #define GLUTILITYMETHODS_H
 
-#include <QGLViewer/qglviewer.h>
+#include <qglviewer.h>
 
 #include "BasicColors.h"
 

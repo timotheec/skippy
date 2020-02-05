@@ -11,9 +11,9 @@
 // opengl and basic gl utilities:
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glext.h>
-#include <QGLViewer/qglviewer.h>
+#include <qglviewer.h>
 #include <QOpenGLFunctions>
-#include <QOpenGLFunctions_4_3_Core>
+#include <QOpenGLFunctions_3_1>
 #include <gl/openglincludeQtComp.h>
 
 #include <gl/GLUtilityMethods.h>
@@ -30,7 +30,7 @@
 #include "qt/QSmartAction.h"
 #include "geometry/Scene3d.h"
 
-class Viewer3D : public QGLViewer, public QOpenGLFunctions_4_3_Core {
+class Viewer3D : public QGLViewer, public QOpenGLFunctions_3_1 {
   Q_OBJECT
 
   Mesh mesh;

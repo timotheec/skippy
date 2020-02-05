@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <QGLViewer/camera.h>
+#include <camera.h>
 
 class Camera : public qglviewer::Camera {
 public:

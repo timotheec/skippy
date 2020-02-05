@@ -3,7 +3,7 @@
 #include "geometry/Sphere.h"
 
 Viewer3D::Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline)
-    : QOpenGLFunctions_4_3_Core(), skippyPipeline(skippyPipeline) {
+    : QOpenGLFunctions_3_1(), skippyPipeline(skippyPipeline) {
   // Change the camera
   qglviewer::Camera *c = Viewer3D::camera();
   setCamera(camera);
