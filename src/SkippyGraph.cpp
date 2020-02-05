@@ -6,13 +6,18 @@ SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
   buildOnSegments(onCandidates);
   createNodes();
   connectOnSegments();
-  print();
+  findAllPaths();
 }
 
 void SkippyGraph::print() const {
-  for (const auto &onSegment : nodes) {
-    cout << onSegment << endl;
-  }
+  //  for (const auto &onSegment : nodes) {
+  //    cout << onSegment << endl;
+  //  }
+  //  for (auto &path : paths) {
+  //    for (auto &onSegment : path)
+  //      cout << *onSegment;
+  //    cout << endl;
+  //  }
 }
 
 void SkippyGraph::buildOnSegments(const PointsSequence &onCandidates) {
@@ -55,10 +60,23 @@ void SkippyGraph::connectOnSegments() {
 
 void SkippyGraph::createNodes() {
   for (auto &onSegment : onSegments)
-      nodes.push_back({&onSegment, {}});
+    nodes.push_back({&onSegment, {}});
 }
 
-void SkippyGraph::findPaths()
-{
+void SkippyGraph::findAllPaths() {
+  for (auto &node : nodes)
+    findAllPaths(node, {});
+}
 
+void SkippyGraph::findAllPaths(const SkippyNode &node,
+                               vector<OnSegment *> path) {
+  path.push_back(node.onSegment);
+  if (node.adjacency.empty()) {
+    paths.push_back(path);
+    return;
+  }
+  for (auto &adjNode : node.adjacency) {
+    vector<OnSegment *> tmp(path);
+    findAllPaths(*adjNode, tmp);
+  }
 }

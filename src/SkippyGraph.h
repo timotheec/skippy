@@ -28,7 +28,8 @@ private:
   void buildOnSegments(const PointsSequence &onCandidates);
   void connectOnSegments();
   void createNodes();
-  void findPaths();
+  void findAllPaths();
+  void findAllPaths(const SkippyNode &node, vector<OnSegment *> path);
 
   vector<OnSegment> onSegments;
   vector<SkippyNode> nodes;
