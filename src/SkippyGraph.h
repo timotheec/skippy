@@ -6,15 +6,35 @@
 using namespace skippy;
 using namespace std;
 
+struct SkippyNode {
+  OnSegment *onSegment;
+  vector<SkippyNode *> adjacency;
+
+  friend std::ostream &operator<<(std::ostream &out, const SkippyNode &node) {
+    out << "{ g<" << node.onSegment->intersectOrder << ">("
+        << node.onSegment->startVertex << ":" << node.onSegment->endVertex
+        << "), {";
+    for (auto &adjNode : node.adjacency)
+      out << "g<" << adjNode->onSegment->intersectOrder << ">("
+          << adjNode->onSegment->startVertex << ":"
+          << adjNode->onSegment->endVertex << "),";
+    return out << " } }";
+  }
+};
+
 class SkippyGraph {
 public:
   SkippyGraph(const PointsSequence &onCandidates,
-              const PointsSequence &offRays  = PointsSequence());
+              const PointsSequence &offRays = PointsSequence());
   void print() const; // For debugging purpose
 
 private:
   void buildOnSegments(const PointsSequence &onCandidates);
+  void connectOnSegments();
+  void createNodes();
+
   vector<OnSegment> onSegments;
+  vector<SkippyNode> nodes;
 };
 
 #endif // SKIPPYGRAPH_H

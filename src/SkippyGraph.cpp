@@ -4,10 +4,12 @@
 SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
                          const PointsSequence &offRays) {
   buildOnSegments(onCandidates);
+  createNodes();
+  connectOnSegments();
 }
 
 void SkippyGraph::print() const {
-  for (const auto &onSegment : onSegments) {
+  for (const auto &onSegment : nodes) {
     cout << onSegment << endl;
   }
 }
@@ -38,4 +40,19 @@ void SkippyGraph::buildOnSegments(const PointsSequence &onCandidates) {
       onSegments.push_back(onSegment);
     }
   }
+}
+
+void SkippyGraph::connectOnSegments() {
+  for (uint i = 0; i < nodes.size(); i++)
+    for (uint j = 0; j < nodes.size(); j++) {
+      if (i == j)
+        continue;
+      if (nodes[j].onSegment->startVertex + 1 > nodes[i].onSegment->endVertex)
+        nodes[i].adjacency.push_back(&nodes[j]);
+    }
+}
+
+void SkippyGraph::createNodes() {
+  for (auto &onSegment : onSegments)
+    nodes.push_back({&onSegment, {}});
 }
