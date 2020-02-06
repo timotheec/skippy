@@ -22,6 +22,7 @@ void Viewer3D::draw() {
   if (!isPressed) {
     //    skippyPipeline->drawOnCandidates();
     //    skippyPipeline->drawFinalOffPoints();
+    skippyPipeline->drawInputRays();
     skippyPipeline->drawPath();
   }
   // skippyPipeline->drawOnSequence();
