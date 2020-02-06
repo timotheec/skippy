@@ -19,8 +19,10 @@ void Viewer3D::draw() {
 
   // skippyPipeline->drawInputSkechesPoint();
   //  skippyPipeline->drawInputRays();
-  if (!isPressed)
+  if (!isPressed) {
     skippyPipeline->drawOnCandidates();
+    skippyPipeline->drawFinalOffPoints();
+  }
   // skippyPipeline->drawOnSequence();
   //---------------------------------------
 
@@ -39,6 +41,8 @@ void Viewer3D::postSelection(const QPoint &point) {
   seqPoint.pos = camera()->pointUnderPixel(point, found);
   // Small offset to make point clearly visible.
   seqPoint.pos -= 0.01f * seqPoint.ray.dir;
+
+  skippyPipeline->addToInputRays(seqPoint.ray);
 
   // TODO: tenporary (only 2 seqence of off points are possible)
   static unsigned int noSeq = 0;

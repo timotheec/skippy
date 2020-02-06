@@ -1,5 +1,4 @@
 #include "SkippyPipeline.h"
-#include "SkippyGraph.h"
 #include "geometry/Sphere.h"
 #include "gl/GLUtilityMethods.h"
 
@@ -9,6 +8,8 @@ using namespace skippy;
 
 SkippyPipeline::SkippyPipeline() {}
 
+SkippyPipeline::~SkippyPipeline() { delete skippyGraph; }
+
 void SkippyPipeline::addSketchPoint(const QPoint &point, const Camera *camera) {
   inputSketchedPoints.push_back(point);
   bool found;
@@ -17,6 +18,10 @@ void SkippyPipeline::addSketchPoint(const QPoint &point, const Camera *camera) {
   Ray rayUnderMouse;
   camera->convertClickToLine(point, rayUnderMouse.orig, rayUnderMouse.dir);
   inputRays.push_back(rayUnderMouse);
+}
+
+void SkippyPipeline::addToInputRays(const Ray &ray) {
+  inputRays.push_back(ray);
 }
 
 void SkippyPipeline::addToOnSequence(const PointSequence &point) {
@@ -76,6 +81,26 @@ void SkippyPipeline::drawOnCandidates() {
   }
 }
 
+void SkippyPipeline::drawFinalOffPoints() {
+  if (!skippyGraph)
+    return;
+  const double DISPLAYED_RAY_LENGHT = 20.0;
+  for (auto &offSegment : skippyGraph->offSegments) {
+    for (auto &offVertex : offSegment.vertices.pointsSeq) {
+      qglviewer::Vec dest =
+          offVertex.ray.orig + DISPLAYED_RAY_LENGHT * offVertex.ray.dir;
+      glBegin(GL_LINES);
+      glVertex3dv(offVertex.ray.orig);
+      glVertex3dv(dest);
+      glEnd();
+
+      Sphere sphere(offVertex.pos, 0.3);
+      glColor3f(0.5f, 0.2f, offVertex.intersectOrder);
+      sphere.draw();
+    }
+  }
+}
+
 void SkippyPipeline::updateOffMaxHeight(double heigth, unsigned int noSeq) {
   if (noSeq == 0 && heigth > offMaxHeigths.first)
     offMaxHeigths.first = heigth;
@@ -118,4 +143,6 @@ void SkippyPipeline::computeOnCandidates() {
   }
 }
 
-void SkippyPipeline::buildGraph() { SkippyGraph skippyGraph(onCandidates); }
+void SkippyPipeline::buildGraph() {
+  skippyGraph = new SkippyGraph(onCandidates, inputRays);
+}

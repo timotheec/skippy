@@ -20,9 +20,10 @@ struct SkippyNode {
 
 class SkippyGraph {
 public:
-  SkippyGraph(const PointsSequence &onCandidates,
-              const PointsSequence &offRays = PointsSequence());
+  SkippyGraph(const PointsSequence &onCandidates, const vector<Ray> &inputRays);
   void print() const; // For debugging purpose
+
+  vector<OffSegment> offSegments;
 
 private:
   void buildOnSegments(const PointsSequence &onCandidates);
@@ -30,6 +31,7 @@ private:
   void createNodes();
   void findAllLongestPaths();
   void findAllPaths(const SkippyNode &node, vector<OnSegment *> path);
+  void computeOffSegments(const vector<Ray> &inputRays);
 
   vector<OnSegment> onSegments;
   vector<SkippyNode> nodes;

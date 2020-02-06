@@ -2,6 +2,7 @@
 #define SKIPPYPIPELINE_H
 
 #include "Camera.h"
+#include "SkippyGraph.h"
 #include "Utils.h"
 
 #include <QPoint>
@@ -14,14 +15,18 @@ using namespace skippy;
 class SkippyPipeline {
 public:
   SkippyPipeline();
+  ~SkippyPipeline();
 
   void addSketchPoint(const QPoint &point, const Camera *camera);
+  void addToInputRays(const Ray &ray);
   void addToOnSequence(const PointSequence &point);
   void addToOffSequence(const PointSequence &point);
+
   void drawInputSkechesPoint();
   void drawInputRays();
   void drawOnSequence();
   void drawOnCandidates();
+  void drawFinalOffPoints();
 
   // Temporary method to update the max heigth of the off sequence (could be 0
   // or 1 for now)
@@ -39,6 +44,8 @@ private:
   PointsSequence onSequence;
   PointsSequence offSequence;
   PointsSequence onCandidates;
+
+  SkippyGraph *skippyGraph = nullptr;
 
   // Temporary attribute to keep the max heigths of the off points for the
   // sequence 0 and 1

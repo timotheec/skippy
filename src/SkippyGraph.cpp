@@ -3,22 +3,23 @@
 #include <iostream>
 
 SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
-                         const PointsSequence &offRays) {
+                         const vector<Ray> &inputRays) {
   buildOnSegments(onCandidates);
   createNodes();
   connectOnSegments();
   findAllLongestPaths();
+  computeOffSegments(inputRays);
 }
 
 void SkippyGraph::print() const {
   //  for (const auto &onSegment : nodes) {
   //    cout << onSegment << endl;
   //  }
-  for (auto &path : paths) {
-    for (auto &onSegment : path)
-      cout << *onSegment;
-    cout << endl;
-  }
+  //  for (auto &path : paths) {
+  //    for (auto &onSegment : path)
+  //      cout << *onSegment;
+  //    cout << endl;
+  //  }
 }
 
 void SkippyGraph::buildOnSegments(const PointsSequence &onCandidates) {
@@ -91,5 +92,41 @@ void SkippyGraph::findAllPaths(const SkippyNode &node,
   for (auto &adjNode : node.adjacency) {
     vector<OnSegment *> tmp(path);
     findAllPaths(*adjNode, tmp);
+  }
+}
+
+void SkippyGraph::computeOffSegments(const vector<Ray> &inputRays) {
+  offSegments.clear();
+  const vector<OnSegment *> &path = paths[1];
+  // Take the origin of any input rays to have the camera position.
+  const qglviewer::Vec &cameraCenter = inputRays[0].orig;
+
+  for (uint i = 0; i < path.size() - 1; i++) {
+    const PointSequence &lastOnVertex = path[i]->vertices.pointsSeq.back();
+    const PointSequence &firstOnVertex =
+        path[i + 1]->vertices.pointsSeq.front();
+    OffSegment offSegment = {{{}},
+                             lastOnVertex.intersectOrder,
+                             firstOnVertex.intersectOrder,
+                             lastOnVertex.ray.index,
+                             firstOnVertex.ray.index};
+    double d1 = (cameraCenter - lastOnVertex.pos).norm();
+    double d2 = (cameraCenter - firstOnVertex.pos).norm();
+
+    int offRaysRange = (firstOnVertex.ray.index - 1) - lastOnVertex.ray.index;
+
+    for (int rayIndex = lastOnVertex.ray.index + 1;
+         rayIndex < firstOnVertex.ray.index; rayIndex++) {
+      double offDistanceToCamera = lerp(d1, d2,
+                                        (rayIndex - (lastOnVertex.ray.index)) /
+                                            double(offRaysRange + 1));
+      PointSequence offPoint = {inputRays[rayIndex],
+                                inputRays[rayIndex].orig +
+                                    inputRays[rayIndex].dir *
+                                        offDistanceToCamera,
+                                -1.0, -1};
+      offSegment.vertices.addPoint(offPoint);
+    }
+    offSegments.push_back(offSegment);
   }
 }
