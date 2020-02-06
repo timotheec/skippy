@@ -27,6 +27,7 @@ public:
   void drawOnSequence();
   void drawOnCandidates();
   void drawFinalOffPoints();
+  void drawPath() const;
 
   // Temporary method to update the max heigth of the off sequence (could be 0
   // or 1 for now)
@@ -35,6 +36,7 @@ public:
 
   void computeOnCandidates();
   void buildGraph();
+  void changePath() const;
 
 private:
   vector<QPoint> inputSketchedPoints;

@@ -85,8 +85,8 @@ void SkippyPipeline::drawFinalOffPoints() {
   if (!skippyGraph)
     return;
   const double DISPLAYED_RAY_LENGHT = 20.0;
-  for (auto &offSegment : skippyGraph->offSegments) {
-    for (auto &offVertex : offSegment.vertices.pointsSeq) {
+  for (const auto &offSegment : skippyGraph->getOffSegment()) {
+    for (const auto &offVertex : offSegment.vertices.pointsSeq) {
       qglviewer::Vec dest =
           offVertex.ray.orig + DISPLAYED_RAY_LENGHT * offVertex.ray.dir;
       glBegin(GL_LINES);
@@ -99,6 +99,12 @@ void SkippyPipeline::drawFinalOffPoints() {
       sphere.draw();
     }
   }
+}
+
+void SkippyPipeline::drawPath() const {
+  if (!skippyGraph)
+    return;
+  skippyGraph->drawPath();
 }
 
 void SkippyPipeline::updateOffMaxHeight(double heigth, unsigned int noSeq) {
@@ -144,5 +150,9 @@ void SkippyPipeline::computeOnCandidates() {
 }
 
 void SkippyPipeline::buildGraph() {
+  if (skippyGraph)
+    delete skippyGraph;
   skippyGraph = new SkippyGraph(onCandidates, inputRays);
 }
+
+void SkippyPipeline::changePath() const { skippyGraph->changePath(); }

@@ -72,6 +72,8 @@ public:
 
   void mouseReleaseEvent(QMouseEvent *e) override;
 
+  void wheelEvent(QWheelEvent *e) override;
+
 signals:
   void windowTitleUpdated(const QString &);
 

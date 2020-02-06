@@ -1,14 +1,41 @@
 #include "SkippyGraph.h"
+#include "geometry/Sphere.h"
 #include <algorithm>
 #include <iostream>
 
 SkippyGraph::SkippyGraph(const PointsSequence &onCandidates,
-                         const vector<Ray> &inputRays) {
+                         const vector<Ray> &inputRays)
+    : inputRays(inputRays) {
   buildOnSegments(onCandidates);
   createNodes();
   connectOnSegments();
   findAllLongestPaths();
-  computeOffSegments(inputRays);
+  computeOffSegments();
+}
+
+void SkippyGraph::drawPath() const {
+  if (paths.empty())
+    return;
+  const vector<OnSegment *> &path = paths[pathIdSeclected];
+
+  glColor3f(0.5f, 0.2f, 0.6f);
+  Sphere sphere(qglviewer::Vec(0, 0, 0), 0.3);
+
+  for (auto &onSegment : path)
+    for (auto &onVertex : onSegment->vertices.pointsSeq) {
+      sphere.setCenter(onVertex.pos);
+      sphere.draw();
+    }
+  for (auto &offSegment : offSegments)
+    for (auto &offVertex : offSegment.vertices.pointsSeq) {
+      sphere.setCenter(offVertex.pos);
+      sphere.draw();
+    }
+}
+
+void SkippyGraph::changePath() {
+  ++pathIdSeclected %= paths.size();
+  computeOffSegments();
 }
 
 void SkippyGraph::print() const {
@@ -20,6 +47,10 @@ void SkippyGraph::print() const {
   //      cout << *onSegment;
   //    cout << endl;
   //  }
+}
+
+const vector<OffSegment> &SkippyGraph::getOffSegment() const {
+  return offSegments;
 }
 
 void SkippyGraph::buildOnSegments(const PointsSequence &onCandidates) {
@@ -95,9 +126,9 @@ void SkippyGraph::findAllPaths(const SkippyNode &node,
   }
 }
 
-void SkippyGraph::computeOffSegments(const vector<Ray> &inputRays) {
+void SkippyGraph::computeOffSegments() {
   offSegments.clear();
-  const vector<OnSegment *> &path = paths[1];
+  const vector<OnSegment *> &path = paths[pathIdSeclected];
   // Take the origin of any input rays to have the camera position.
   const qglviewer::Vec &cameraCenter = inputRays[0].orig;
 

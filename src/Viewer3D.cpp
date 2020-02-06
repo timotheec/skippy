@@ -20,8 +20,9 @@ void Viewer3D::draw() {
   // skippyPipeline->drawInputSkechesPoint();
   //  skippyPipeline->drawInputRays();
   if (!isPressed) {
-    skippyPipeline->drawOnCandidates();
-    skippyPipeline->drawFinalOffPoints();
+    //    skippyPipeline->drawOnCandidates();
+    //    skippyPipeline->drawFinalOffPoints();
+    skippyPipeline->drawPath();
   }
   // skippyPipeline->drawOnSequence();
   //---------------------------------------
@@ -97,10 +98,19 @@ void Viewer3D::mouseMoveEvent(QMouseEvent *e) {
 void Viewer3D::mouseReleaseEvent(QMouseEvent *e) {
   QGLViewer::mouseReleaseEvent(e);
   isPressed = false;
+  if (e->modifiers() == Qt::NoModifier) {
+    skippyPipeline->computeOnPointsHeigth();
+    skippyPipeline->computeOnCandidates();
+    skippyPipeline->buildGraph();
+  }
+}
 
-  skippyPipeline->computeOnPointsHeigth();
-  skippyPipeline->computeOnCandidates();
-  skippyPipeline->buildGraph();
+void Viewer3D::wheelEvent(QWheelEvent *e) {
+  QGLViewer::wheelEvent(e);
+  if (e->modifiers() == Qt::ALT) {
+    skippyPipeline->changePath();
+    update();
+  }
 }
 
 void Viewer3D::init() {
