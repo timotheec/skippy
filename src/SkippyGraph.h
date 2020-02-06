@@ -33,7 +33,8 @@ private:
   void findAllLongestPaths();
   void findAllPaths(const SkippyNode &node, vector<OnSegment *> path);
   void computeOffSegments();
-  void computeExtremOffSegments();
+  void computeFirstOffSegment();
+  void computeLastOffSegment();
 
   uint pathIdSeclected = 0;
   vector<Ray> inputRays;

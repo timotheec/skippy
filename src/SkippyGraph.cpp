@@ -160,10 +160,11 @@ void SkippyGraph::computeOffSegments() {
     }
     offSegments.push_back(offSegment);
   }
-  computeExtremOffSegments();
+  computeFirstOffSegment();
+  computeLastOffSegment();
 }
 
-void SkippyGraph::computeExtremOffSegments() {
+void SkippyGraph::computeFirstOffSegment() {
   const vector<OnSegment *> &path = paths[pathIdSeclected];
   // Take the origin of any input rays to have the camera position.
   const qglviewer::Vec &cameraCenter = inputRays[0].orig;
@@ -185,7 +186,7 @@ void SkippyGraph::computeExtremOffSegments() {
           (cameraCenter - firstSgement.vertices.pointsSeq[i + 1].pos).norm();
       deltaD += d1 - d2;
     }
-    deltaD /= (double)nbVertices;
+    deltaD /= (double)(nbVertices - 1);
     double d =
         (cameraCenter - firstSgement.vertices.pointsSeq.front().pos).norm();
 
@@ -196,6 +197,48 @@ void SkippyGraph::computeExtremOffSegments() {
       qglviewer::Vec offPoint =
           cameraCenter +
           (d + (firstSgement.startVertex - q) * deltaD) * inputRays[q].dir;
+      PointSequence offSeq = {inputRays[q], offPoint, -1.0, -1};
+      offSegment.vertices.addPoint(offSeq);
+    }
+    offSegments.push_back(offSegment);
+  }
+}
+
+void SkippyGraph::computeLastOffSegment() {
+  const vector<OnSegment *> &path = paths[pathIdSeclected];
+  // Take the origin of any input rays to have the camera position.
+  const qglviewer::Vec &cameraCenter = inputRays[0].orig;
+
+  const OnSegment &lastSegment = *path.back();
+
+  if (lastSegment.endVertex < (int)inputRays.size() - 1) {
+    double deltaD = 0;
+    uint lastSegmentSize = lastSegment.vertices.pointsSeq.size();
+    // max number of vertices for average change of distance
+    const uint MAX_NB_VERTICES = 4;
+    // number of vertices for average change of distance
+    const uint nbVertices = MAX_NB_VERTICES % lastSegmentSize;
+
+    for (uint i = lastSegmentSize - nbVertices; i < lastSegmentSize - 1; i++) {
+      double d1 = (cameraCenter - lastSegment.vertices.pointsSeq[i].pos).norm();
+      double d2 =
+          (cameraCenter - lastSegment.vertices.pointsSeq[i + 1].pos).norm();
+      deltaD += d2 - d1;
+    }
+    deltaD /= (double)(nbVertices - 1);
+    double d =
+        (cameraCenter - lastSegment.vertices.pointsSeq.back().pos).norm();
+
+    OffSegment offSegment = {{{}},
+                             lastSegment.intersectOrder,
+                             -1,
+                             lastSegment.endVertex,
+                             (int)inputRays.size() - 1};
+
+    for (int q = lastSegment.endVertex + 1; q < (int)inputRays.size(); q++) {
+      qglviewer::Vec offPoint =
+          cameraCenter +
+          (d + (q - lastSegment.endVertex) * deltaD) * inputRays[q].dir;
       PointSequence offSeq = {inputRays[q], offPoint, -1.0, -1};
       offSegment.vertices.addPoint(offSeq);
     }
