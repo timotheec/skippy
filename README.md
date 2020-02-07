@@ -15,3 +15,7 @@ This repository proposed an impplementation of Skippy a single view 3D curve int
 
 * ```qmake```
 * ```make``` (from build folder)
+
+## Interact with the app 
+
+* Refer to the first tab in the helper page of the app (you will see all shortcuts required to properly interact with the app)

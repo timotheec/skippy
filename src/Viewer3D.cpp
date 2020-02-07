@@ -170,10 +170,13 @@ QString Viewer3D::helpString() const {
   text += "<h3>Basics</h3>";
   text += "<p>";
   text += "<ul>";
-  text += "<li>H   :   make this help appear</li>";
-  text += "<li>Ctrl + mouse right button double click   :   choose background "
-          "color</li>";
-  text += "<li>Ctrl + T   :   change window title</li>";
+  text += "<li>H : make this help appear</li>";
+  text += "<li>Ctrl + mouse left button pressed + mouse mooving : rotate "
+          "the object</li>";
+  text += "<li>mouse left button pressed + mouse mooving : drawing a "
+          "curve</li>";
+  text += "<li>mouse mouse wheel : zoom in/out</li>";
+  text += "<li>Alt + mouse wheel : explore different curve possibilities</li>";
   text += "</ul>";
   return text;
 }
