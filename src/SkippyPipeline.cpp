@@ -132,7 +132,8 @@ void SkippyPipeline::computeOnCandidates() {
     qglviewer::Vec p2(0, 0, 0);
 
     // TODO : hardcoded iso sphere, I assume there is only one sphere (pos :
-    // 0,0,0 and radius : 1)
+    // 0,0,0 and radius : 1), easy to adpat by getting 3d objs from Scene3D
+    // class
     Sphere isoSphere(qglviewer::Vec(0, 0, 0), 1.0 + pointSeq.heigth);
     bool isIntersected = isoSphere.intersect(pointSeq.ray, p1, p2);
     if (isIntersected) {
@@ -150,9 +151,15 @@ void SkippyPipeline::computeOnCandidates() {
 }
 
 void SkippyPipeline::buildGraph() {
-  if (skippyGraph)
+  if (onSequence.pointsSeq.empty())
+    return;
+  if (skippyGraph != nullptr)
     delete skippyGraph;
   skippyGraph = new SkippyGraph(onCandidates, inputRays);
 }
 
-void SkippyPipeline::changePath() const { skippyGraph->changePath(); }
+void SkippyPipeline::changePath() const {
+  if (skippyGraph == nullptr)
+    return;
+  skippyGraph->changePath();
+}

@@ -11,10 +11,10 @@
 // opengl and basic gl utilities:
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glext.h>
-#include <qglviewer.h>
 #include <QOpenGLFunctions>
 #include <QOpenGLFunctions_3_1>
 #include <gl/openglincludeQtComp.h>
+#include <qglviewer.h>
 
 #include <gl/GLUtilityMethods.h>
 
@@ -27,8 +27,8 @@
 #include <QLineEdit>
 #include <QToolBar>
 
-#include "qt/QSmartAction.h"
 #include "geometry/Scene3d.h"
+#include "qt/QSmartAction.h"
 
 class Viewer3D : public QGLViewer, public QOpenGLFunctions_3_1 {
   Q_OBJECT
@@ -43,8 +43,12 @@ class Viewer3D : public QGLViewer, public QOpenGLFunctions_3_1 {
 
   Scene3D scene;
 
+  int rayOrder = 0;
+
 public:
   Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline);
+
+  ~Viewer3D();
 
   void draw() override;
 

@@ -10,6 +10,8 @@ Viewer3D::Viewer3D(Camera *camera, SkippyPipeline *skippyPipeline)
   delete c;
 }
 
+Viewer3D::~Viewer3D() { delete skippyPipeline; }
+
 void Viewer3D::draw() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
@@ -17,16 +19,15 @@ void Viewer3D::draw() {
 
   scene.draw();
 
-  // skippyPipeline->drawInputSkechesPoint();
-  //  skippyPipeline->drawInputRays();
   if (!isPressed) {
-    //    skippyPipeline->drawOnCandidates();
-    //    skippyPipeline->drawFinalOffPoints();
-    skippyPipeline->drawInputRays();
+    // skippyPipeline->drawInputSkechesPoint();
+    // skippyPipeline->drawInputRays();
+    // skippyPipeline->drawOnCandidates();
+    // skippyPipeline->drawFinalOffPoints();
+    // skippyPipeline->drawInputRays();
+    // skippyPipeline->drawOnSequence();
     skippyPipeline->drawPath();
   }
-  // skippyPipeline->drawOnSequence();
-  //---------------------------------------
 
   mesh.draw();
 }
@@ -34,8 +35,6 @@ void Viewer3D::draw() {
 void Viewer3D::drawWithNames() { scene.drawWithNames(); }
 
 void Viewer3D::postSelection(const QPoint &point) {
-  //  skippyPipeline->addSketchPoint(point, static_cast<Camera *>(camera()));
-  static int rayOrder = 0;
   skippy::PointSequence seqPoint;
   seqPoint.ray.index = rayOrder++;
   camera()->convertClickToLine(point, seqPoint.ray.orig, seqPoint.ray.dir);
@@ -79,8 +78,13 @@ void Viewer3D::mouseDoubleClickEvent(QMouseEvent *e) {
 
 void Viewer3D::mousePressEvent(QMouseEvent *e) {
   QGLViewer::mousePressEvent(e);
-  if (e->button() == Qt::LeftButton && e->modifiers() != Qt::ControlModifier)
+  if (e->button() == Qt::LeftButton && e->modifiers() == Qt::NoModifier) {
     isPressed = true;
+    if (skippyPipeline != nullptr)
+      delete skippyPipeline;
+    skippyPipeline = new SkippyPipeline();
+    rayOrder = 0;
+  }
 }
 
 void Viewer3D::mouseMoveEvent(QMouseEvent *e) {

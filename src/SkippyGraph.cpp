@@ -34,6 +34,8 @@ void SkippyGraph::drawPath() const {
 }
 
 void SkippyGraph::changePath() {
+  if (paths.empty())
+    return;
   ++pathIdSeclected %= paths.size();
   computeOffSegments();
 }
@@ -54,6 +56,8 @@ const vector<OffSegment> &SkippyGraph::getOffSegment() const {
 }
 
 void SkippyGraph::buildOnSegments(const PointsSequence &onCandidates) {
+  if (onCandidates.pointsSeq.empty())
+    return;
   auto it = begin(onCandidates.pointsSeq);
   OnSegment firstOnSegment = {
       {{*it}}, it->intersectOrder, it->ray.index, it->ray.index};
@@ -86,7 +90,7 @@ void SkippyGraph::connectOnSegments() {
     for (uint j = 0; j < nodes.size(); j++) {
       if (i == j)
         continue;
-      if (nodes[j].onSegment->startVertex + 1 > nodes[i].onSegment->endVertex)
+      if (nodes[j].onSegment->startVertex > nodes[i].onSegment->endVertex + 1)
         nodes[i].adjacency.push_back(&nodes[j]);
     }
 }
@@ -127,6 +131,8 @@ void SkippyGraph::findAllPaths(const SkippyNode &node,
 }
 
 void SkippyGraph::computeOffSegments() {
+  if (paths.empty())
+    return;
   offSegments.clear();
   const vector<OnSegment *> &path = paths[pathIdSeclected];
   // Take the origin of any input rays to have the camera position.
